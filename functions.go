@@ -5,11 +5,11 @@ import (
 	"encoding/json"
 	"errors"
 	"os"
-	"strings"
 )
 
-// LoadEveJSONFile loads a suricata eve.json from a given path and returns a
-// result channel containing marshaled events and a error channel.
+// LoadEveJSONFile reads a suricata eve.json from a given path and returns two
+// channels. One for parsed EveEvents and one for parsing errors. Those two
+// channels need to be handled separately.
 func LoadEveJSONFile(path string) (<-chan EveEvent, <-chan error) {
 	eventChan := make(chan EveEvent)
 	errorChan := make(chan error)
@@ -40,21 +40,4 @@ func LoadEveJSONFile(path string) (<-chan EveEvent, <-chan error) {
 	}()
 
 	return eventChan, errorChan
-}
-
-// LoadEveString loads a eve formated string and returns a struct of EveEvents
-func LoadEveString(eveString string) (EveEvents, error) {
-	var ev EveEvent
-	var events EveEvents
-
-	scanner := bufio.NewScanner(strings.NewReader(eveString))
-	for scanner.Scan() {
-		err := json.Unmarshal(scanner.Bytes(), &ev)
-		if err != nil {
-			return events, errors.New("Error unmarshaling eve.json line: " +
-				err.Error() + " " + scanner.Text())
-		}
-		events.Events = append(events.Events, ev)
-	}
-	return events, nil
 }

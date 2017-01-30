@@ -11,7 +11,7 @@ further assistance.
 ### Install
 
 ```bash
-go get -u github.com/SleuthKid/surevego/...
+go get -u github.com/SleuthKid/surevego
 ```
 
 

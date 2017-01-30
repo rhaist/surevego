@@ -1,5 +1,19 @@
 package surevego
 
+import "time"
+
+const RFC3339Micro = "2006-01-02T15:04:05.000000-0700"
+
+type suriTime struct{ time.Time }
+
+func (t *suriTime) UnmarshalJSON(b []byte) (err error) {
+	t.Time, err = time.Parse(RFC3339Micro, string(b))
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
 type alertEvent struct {
 	Action      string `json:"action"`
 	Gid         int    `json:"gid"`
@@ -193,7 +207,7 @@ type tcpEvent struct {
 // log event. It should be access using the convenient function splitting it
 // by event_type.
 type EveEvent struct {
-	Timestamp string    `json:"timestamp"`
+	Timestamp suriTime  `json:"timestamp"`
 	EventType string    `json:"event_type"`
 	FlowID    int64     `json:"flow_id,omitempty"`
 	InIface   string    `json:"in_iface,omitempty"`
@@ -212,7 +226,6 @@ type EveEvent struct {
 	} `json:"packet_info,omitempty"`
 
 	// Alert Events have some additional high level attributes to the json model
-	// TODO: ask somebody at OISF WTF this is not encapsulated
 	Alert            *alertEvent `json:"alert,omitempty"`
 	Payload          string      `json:"payload,omitempty"`
 	PayloadPrintable string      `json:"payload_printable,omitempty"`
@@ -235,6 +248,3 @@ type EveEvent struct {
 	TLS      *tlsEvent      `json:"tls,omitempty"`
 	Stats    *statsEvent    `json:"stats,omitempty"`
 }
-
-// EveEvents hold multiple EveEvents - obviously
-type EveEvents struct{ Events []EveEvent }
