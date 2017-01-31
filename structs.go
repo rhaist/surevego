@@ -210,9 +210,8 @@ type tcpEvent struct {
 	TCPflagsTs string `json:"tcp_flags_ts"`
 }
 
-// EveEvent is the monster struct which can contain a parsed suricata eve.json
-// log event. It should be access using the convenient function splitting it
-// by event_type.
+// EveEvent is the huge struct which can contain a parsed suricata eve.json
+// log event.
 type EveEvent struct {
 	Timestamp *suriTime `json:"timestamp"`
 	EventType string    `json:"event_type"`
