@@ -1,13 +1,20 @@
 package surevego
 
-import "time"
+import (
+	"strconv"
+	"time"
+)
 
-const RFC3339Micro = "2006-01-02T15:04:05.000000-0700"
+const suricataTimestampFormat = "2006-01-02T15:04:05.999999-0700"
 
 type suriTime struct{ time.Time }
 
-func (t *suriTime) UnmarshalJSON(b []byte) (err error) {
-	t.Time, err = time.Parse(RFC3339Micro, string(b))
+func (t *suriTime) UnmarshalJSON(b []byte) error {
+	data, err := strconv.Unquote(string(b))
+	if err != nil {
+		return err
+	}
+	t.Time, err = time.Parse(suricataTimestampFormat, data)
 	if err != nil {
 		return err
 	}
@@ -54,15 +61,15 @@ type fileinfoEvent struct {
 }
 
 type flowEvent struct {
-	PktsToserver  int    `json:"pkts_toserver"`
-	PktsToclient  int    `json:"pkts_toclient"`
-	BytesToserver int    `json:"bytes_toserver"`
-	BytesToclient int    `json:"bytes_toclient"`
-	Start         string `json:"start"`
-	End           string `json:"end"`
-	Age           int    `json:"age"`
-	State         string `json:"state"`
-	Reason        string `json:"reason"`
+	PktsToserver  int       `json:"pkts_toserver"`
+	PktsToclient  int       `json:"pkts_toclient"`
+	BytesToserver int       `json:"bytes_toserver"`
+	BytesToclient int       `json:"bytes_toclient"`
+	Start         *suriTime `json:"start"`
+	End           *suriTime `json:"end"`
+	Age           int       `json:"age"`
+	State         string    `json:"state"`
+	Reason        string    `json:"reason"`
 }
 
 type tlsEvent struct {
@@ -207,7 +214,7 @@ type tcpEvent struct {
 // log event. It should be access using the convenient function splitting it
 // by event_type.
 type EveEvent struct {
-	Timestamp suriTime  `json:"timestamp"`
+	Timestamp *suriTime `json:"timestamp"`
 	EventType string    `json:"event_type"`
 	FlowID    int64     `json:"flow_id,omitempty"`
 	InIface   string    `json:"in_iface,omitempty"`
