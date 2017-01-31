@@ -2,6 +2,7 @@ surevego
 ========
 
 [![GoDoc](https://godoc.org/github.com/SleuthKid/surevego?status.svg)](http://godoc.org/github.com/SleuthKid/surevego)
+[![Build Status](https://travis-ci.org/SleuthKid/surevego.svg?branch=master)](https://travis-ci.org/SleuthKid/surevego)
 
 surevego is a Go library to parse suricata eve.json files with proper marshaling.
 
