@@ -34,8 +34,11 @@ type alertEvent struct {
 type dnsEvent struct {
 	Type   string `json:"type"`
 	ID     int    `json:"id"`
+	Rcode  string `json:"rcode"`
 	Rrname string `json:"rrname"`
 	Rrtype string `json:"rrtype"`
+	TTL    int    `json:"ttl"`
+	Rdata  string `json:"rdata"`
 	TxID   int    `json:"tx_id"`
 }
 
