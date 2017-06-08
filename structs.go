@@ -15,10 +15,7 @@ func (t *suriTime) UnmarshalJSON(b []byte) error {
 		return err
 	}
 	t.Time, err = time.Parse(suricataTimestampFormat, data)
-	if err != nil {
-		return err
-	}
-	return nil
+	return err
 }
 
 type alertEvent struct {
