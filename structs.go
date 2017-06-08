@@ -213,6 +213,10 @@ type tcpEvent struct {
 	TCPflagsTs string `json:"tcp_flags_ts"`
 }
 
+type emailEvent struct {
+	Status string `json:"status"`
+}
+
 // EveEvent is the huge struct which can contain a parsed suricata eve.json
 // log event.
 type EveEvent struct {
@@ -244,11 +248,8 @@ type EveEvent struct {
 	// SMTP Events have some additional high level attributes to the json model
 	SMTP *smtpEvent `json:"smtp,omitempty"`
 
-	Email struct {
-		Status string `json:"status"`
-	} `json:"email,omitempty"`
-
 	// Other sub event_types
+	Email    *emailEvent    `json:"email,omitempty"`
 	DNS      *dnsEvent      `json:"dns,omitempty"`
 	HTTP     *httpEvent     `json:"http,omitempty"`
 	Fileinfo *fileinfoEvent `json:"fileinfo,omitempty"`
