@@ -2,6 +2,7 @@ package surevego
 
 import (
 	"log"
+	"sync"
 	"testing"
 )
 
@@ -56,10 +57,13 @@ func TestLoadEveJSONFile(t *testing.T) {
 
 func TestLoadBrokenEveJSONFile(t *testing.T) {
 	var countErrors int
+	var wg sync.WaitGroup
 
 	ee, ec := LoadEveJSONFile("testdata/eve_broken.json")
 
+	wg.Add(1)
 	go func() {
+		defer wg.Done()
 		for err := range ec {
 			t.Log(err)
 			countErrors++
@@ -72,6 +76,7 @@ func TestLoadBrokenEveJSONFile(t *testing.T) {
 		}
 	}
 
+	wg.Wait()
 	if countErrors < 1 {
 		t.Error("Error count mismatch")
 	}
