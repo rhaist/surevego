@@ -16,9 +16,12 @@ func LoadEveJSONFile(path string) (<-chan EveEvent, <-chan error) {
 
 	file, err := os.Open(path)
 	if err != nil {
-		errorChan <- err
-		close(eventChan)
-		close(errorChan)
+		go func() {
+			errorChan <- err
+			close(eventChan)
+			close(errorChan)
+		}()
+		return nil, errorChan
 	}
 
 	scanner := bufio.NewScanner(file)
