@@ -127,7 +127,7 @@ func TestMarshalWithTimestamp(t *testing.T) {
 		t.Error(err)
 	}
 
-	if inEVE.Timestamp.Time != e.Timestamp.Time {
+	if !inEVE.Timestamp.Time.Equal(e.Timestamp.Time) {
 		t.Fatalf("timestamp round-trip failed: %v <-> %v", inEVE.Timestamp, e.Timestamp)
 	}
 }
