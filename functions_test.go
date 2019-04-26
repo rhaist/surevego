@@ -1,6 +1,7 @@
 package surevego
 
 import (
+	"encoding/json"
 	"log"
 	"sync"
 	"testing"
@@ -79,5 +80,54 @@ func TestLoadBrokenEveJSONFile(t *testing.T) {
 	wg.Wait()
 	if countErrors < 1 {
 		t.Error("Error count mismatch")
+	}
+}
+
+func TestMissingJSONFile(t *testing.T) {
+	var countErrors int
+	var wg sync.WaitGroup
+
+	_, ec := LoadEveJSONFile("nonexistant")
+
+	wg.Add(1)
+	go func(myWg *sync.WaitGroup, myEc <-chan error) {
+		defer myWg.Done()
+		for err := range myEc {
+			t.Log(err)
+			countErrors++
+			break
+		}
+	}(&wg, ec)
+
+	wg.Wait()
+	if countErrors < 1 {
+		t.Error("Error count mismatch")
+	}
+}
+
+func TestMarshalWithTimestamp(t *testing.T) {
+	ee, ec := LoadEveJSONFile("testdata/eve.json")
+
+	go func() {
+		for err := range ec {
+			t.Error(err)
+		}
+	}()
+
+	e := <-ee
+
+	out, err := json.Marshal(e)
+	if err != nil {
+		t.Error(err)
+	}
+
+	var inEVE EveEvent
+	err = json.Unmarshal(out, &inEVE)
+	if err != nil {
+		t.Error(err)
+	}
+
+	if inEVE.Timestamp.Time != e.Timestamp.Time {
+		t.Fatalf("timestamp round-trip failed: %v <-> %v", inEVE.Timestamp, e.Timestamp)
 	}
 }
