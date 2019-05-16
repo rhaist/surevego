@@ -18,6 +18,10 @@ func (t *suriTime) UnmarshalJSON(b []byte) error {
 	return err
 }
 
+func (t *suriTime) MarshalJSON() ([]byte, error) {
+	return []byte("\"" + t.Time.Format(suricataTimestampFormat) + "\""), nil
+}
+
 type alertEvent struct {
 	Action      string `json:"action"`
 	Gid         int    `json:"gid"`
